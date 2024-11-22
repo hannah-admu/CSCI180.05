@@ -3,10 +3,13 @@ package app.rest.controllers;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,20 +39,18 @@ public class ReviewController {
     }
 
     //http://127.0.0.1:9999/review/location
-    @POST
+    @GET
     @Path("/location")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Review> getReviewsByLocation(@FormParam("locationName") String locationName) {
+    public List<Review> getReviewsByLocation(@QueryParam("locationName") String locationName) {
         return reviewComponent.getLocationReviews(locationName);
     }
 
     //http://127.0.0.1:9999/review/delete
-    @POST
+    @DELETE
     @Path("/delete")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String deleteReview(@FormParam("reviewId") Long reviewId,
-                                @FormParam("userId") Long userId) {
+    public String deleteReview(@QueryParam("reviewId") Long reviewId,
+                                @QueryParam("userId") Long userId) {
         reviewComponent.deleteReview(reviewId, userId);
         return "Review deleted";
     }

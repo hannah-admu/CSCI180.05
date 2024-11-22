@@ -2,6 +2,8 @@ package app.components;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,13 +48,13 @@ public class ObstructionComponent {
     private void logReport(Double idNumber, Long obstructionId, String locationName, String specificLocation, String reportType, String description) {
         User user = userRepository.findByIdNumber(idNumber);
 
-        // Create and save a new report
+
         Report report = new Report();
         report.setUserId(user.getId());
         report.setUsername(user.getUsername());
-        report.setLocationId(obstructionId); // Link to the obstruction
+        report.setLocationId(obstructionId); //link to obstruction
         report.setLocationName(locationName);
-        report.setSpecificLocation(specificLocation); // Use the specific location from the reportObstruction input
+        report.setSpecificLocation(specificLocation); //use specificLocation from reportObstruction 
         report.setDescription(description);
         report.setReportType(reportType);
         reportRepository.save(report);
@@ -67,6 +69,13 @@ public class ObstructionComponent {
     //TO-DO
     public String resolveObstruction(Long obstructionId, String resolutionComment) {
         return null;
+    }
+    
+    public void deleteObstruction(Long obstructionId) {
+        if (!obstructionRepository.existsById(obstructionId)) {
+            throw new EntityNotFoundException("Obstruction not found with ID: " + obstructionId);
+        }
+        obstructionRepository.deleteById(obstructionId);
     }
 	
 }

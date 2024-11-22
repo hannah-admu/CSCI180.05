@@ -1,9 +1,11 @@
 package app.rest.controllers;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,14 @@ public class ObstructionController {
     public String resolveObstruction(@FormParam("obstructionId") Long obstructionId,
                                      @FormParam("resolutionComment") String resolutionComment) {
         return obstructionComponent.resolveObstruction(obstructionId, resolutionComment);
+    }
+    
+    //http://127.0.0.1:9999/obstruction/delete
+    @DELETE
+    @Path("/delete")
+    public String deleteObstruction(@QueryParam("obstructionId") Long obstructionId) {
+        obstructionComponent.deleteObstruction(obstructionId);
+        return "Obstruction deleted successfully.";
     }
 
 }

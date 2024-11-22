@@ -2,6 +2,7 @@ package app.entity;
 
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -33,9 +34,8 @@ public class User {
     @Column
     private Double idNumber;
 
-    @ElementCollection
-    @Column
-    private List<Long> locationNotifications;
+    @Column 
+    private String locationNotifications;
 
 	public Long getId() {
 		return id;
@@ -77,11 +77,11 @@ public class User {
 		this.idNumber = idNumber;
 	}
 
-	public List<Long> getLocationNotifications() {
+	public String getLocationNotifications() {
 		return locationNotifications;
 	}
 
-	public void setLocationNotifications(List<Long> locationNotifications) {
+	public void setLocationNotifications(String locationNotifications) {
 		this.locationNotifications = locationNotifications;
 	}
     

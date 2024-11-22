@@ -2,6 +2,7 @@ package app.rest.controllers;
 
 import java.util.List;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -9,10 +10,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import app.components.ReportComponent;
 import app.entity.Report;
 
+@Component
+@Path("/report")
 public class ReportController {
 	
 	@Autowired
@@ -52,6 +56,15 @@ public class ReportController {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Report> getReportsByDescription(@QueryParam("keyword") String description) {
         return reportComponent.getReportsByDescription(description);
+    }
+    
+    //delete a report based on report Id 
+  //http://127.0.0.1:9999/report/delete
+    @DELETE
+    @Path("/delete")
+    public String deleteReport(@QueryParam("reportId") Long reportId) {
+        reportComponent.deleteReport(reportId);
+        return "Report deleted successfully.";
     }
 	
 }

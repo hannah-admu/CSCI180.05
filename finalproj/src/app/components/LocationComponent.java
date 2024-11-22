@@ -1,6 +1,7 @@
 package app.components;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
@@ -10,12 +11,16 @@ import org.springframework.stereotype.Component;
 
 import app.entity.Location;
 import app.repository.LocationRepository;
+import app.repository.ObstructionRepository;
 
 @Component
 public class LocationComponent {
 	
 	@Autowired
 	private LocationRepository locationRepository;
+	
+    @Autowired
+    private ObstructionRepository obstructionRepository;
 	
 	///TO-DO: add more locations
 	@PostConstruct
@@ -44,6 +49,26 @@ public class LocationComponent {
 		
 	}
 	
+    public void createLocation(String name, Double latitude, Double longitude, Boolean hasRamp, Boolean hasElevator, String notes) {
+        Location location = new Location();
+        location.setName(name);
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
+        location.setHasRamp(hasRamp);
+        location.setHasElevator(hasElevator);
+        location.setNotes(notes);
+        locationRepository.save(location);
+    }
+
+    public void deleteLocation(String locationName) {
+        Location location = locationRepository.findByName(locationName);
+        if (location != null) {
+            locationRepository.delete(location);
+        } else {
+            throw new EntityNotFoundException("Location not found: " + locationName);
+        }
+    }
+	
 	//TO-DO: need to return location features
 	public Location getLocationFeatures(String locationName) {
 		
@@ -63,7 +88,6 @@ public class LocationComponent {
         return location.getId();
     }
 	
-	//methods below I added bc why not
 	public List<Location> getLocationsWithRamps() {
         return locationRepository.findByHasRamp(true);
     }
@@ -71,5 +95,10 @@ public class LocationComponent {
     public List<Location> getLocationsWithElevators() {
         return locationRepository.findByHasElevator(true);
     }
+
+    //TO-DO
+	public Map<String, Object> getObstructionsByLocation(String locationName) {
+		return null;
+	}
 
 }

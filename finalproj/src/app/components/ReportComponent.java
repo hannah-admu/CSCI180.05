@@ -2,6 +2,8 @@ package app.components;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,5 +38,10 @@ public class ReportComponent {
         return reportRepository.findByDescriptionContaining(description);
     }
 
-    
+    public void deleteReport(Long reportId) {
+        if (!reportRepository.existsById(reportId)) {
+            throw new EntityNotFoundException("Report not found with ID: " + reportId);
+        }
+        reportRepository.deleteById(reportId);
+    }
 }
