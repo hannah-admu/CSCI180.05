@@ -59,7 +59,7 @@ public class ReportController {
     }
     
     //delete a report based on report Id 
-  //http://127.0.0.1:9999/report/delete
+    //http://127.0.0.1:9999/report/delete
     @DELETE
     @Path("/delete")
     public String deleteReport(@QueryParam("reportId") Long reportId) {

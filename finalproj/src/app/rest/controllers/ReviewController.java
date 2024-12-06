@@ -29,12 +29,12 @@ public class ReviewController {
     @POST
     @Path("/submit")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String submitReview(@FormParam("userId") Long userId,
-                                @FormParam("username") String username,
-                                @FormParam("locationName") String locationName,
-                                @FormParam("reviewTitle") String reviewTitle,
-                                @FormParam("reviewBody") String reviewBody) {
-        reviewComponent.createReview(userId, username, locationName, reviewTitle, reviewBody);
+    public String submitReview(@FormParam("idNumber") Double idNumber,
+                               @FormParam("username") String username,
+                               @FormParam("locationName") String locationName,
+                               @FormParam("reviewTitle") String reviewTitle,
+                               @FormParam("reviewBody") String reviewBody) {
+        reviewComponent.createReview(idNumber, username, locationName, reviewTitle, reviewBody);
         return "Review submitted";
     }
 
@@ -46,25 +46,31 @@ public class ReviewController {
         return reviewComponent.getLocationReviews(locationName);
     }
 
-    //http://127.0.0.1:9999/review/delete
-    @DELETE
-    @Path("/delete")
-    public String deleteReview(@QueryParam("reviewId") Long reviewId,
-                                @QueryParam("userId") Long userId) {
-        reviewComponent.deleteReview(reviewId, userId);
-        return "Review deleted";
-    }
-
     //http://127.0.0.1:9999/review/edit
     @POST
     @Path("/edit")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public String editReview(@FormParam("reviewId") Long reviewId,
-                             @FormParam("userId") Long userId,
-                             @FormParam("newTitle") String newTitle,
-                             @FormParam("newBody") String newBody) {
-        reviewComponent.editReview(reviewId, userId, newTitle, newBody);
-        return "Review edited";
+				             @FormParam("idNumber") Double idNumber,
+				             @FormParam("newTitle") String newTitle,
+				             @FormParam("newBody") String newBody) {
+		reviewComponent.editReview(reviewId, idNumber, newTitle, newBody);
+		return "Review edited";
+    }
+    
+    //http://127.0.0.1:9999/review/delete
+    @DELETE
+    @Path("/delete")
+    public String deleteReview(@QueryParam("reviewId") Long reviewId,
+                               @QueryParam("idNumber") Double idNumber) {
+        if (idNumber == null) {
+            return "Error: idNumber is missing.";
+        }
+        if (reviewId == null) {
+            return "Error: reviewId is missing.";
+        }
+        reviewComponent.deleteReview(reviewId, idNumber);
+        return "Review deleted";
     }
 	
 }
