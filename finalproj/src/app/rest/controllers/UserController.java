@@ -2,6 +2,7 @@ package app.rest.controllers;
 
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.components.UserComponent;
+import app.dto.UserNotificationPreferencesDTO;
 
 @Component
 @Path("/user")
@@ -31,7 +33,12 @@ public class UserController {
 	public String createUser(@FormParam("username") String username,
 	                         @FormParam("phoneNumber") String phoneNumber,
 	                         @FormParam("idNumber") Double idNumber) {
-		return "User added";
+	    try {
+	        userComponent.createUser(username, phoneNumber, idNumber);
+	        return "User added successfully";
+	    } catch (Exception e) {
+	        return "Error: " + e.getMessage();
+	    }
 	}
 
 	//http://127.0.0.1:9999/user/updatePhone
@@ -47,12 +54,15 @@ public class UserController {
 	//http://127.0.0.1:9999/user/preferences/set
 	@POST
     @Path("/preferences/set")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String setNotificationPreferences(@FormParam("idNumber") Double idNumber,
-                                              @FormParam("locationIds") List<Long> locationIds) {
-        userComponent.setNotificationPreferences(idNumber, locationIds);
-        return "Notification preferences updated";
-    }
+    @Consumes(MediaType.APPLICATION_JSON)
+	public String setNotificationPreferences(UserNotificationPreferencesDTO preferencesDTO) {
+	    try {
+	        userComponent.setNotificationPreferences(preferencesDTO.getIdNumber(), preferencesDTO.getLocationIds());
+	        return "Notification preferences updated";
+	    } catch (Exception e) {
+	        return "Error: " + e.getMessage();
+	    }
+	}
 
 	//http://127.0.0.1:9999/user/preferences/get
     @GET
@@ -61,13 +71,17 @@ public class UserController {
     public List<Long> getNotificationPreferences(@QueryParam("idNumber") Double idNumber) {
         return userComponent.getNotificationPreferences(idNumber);
     }
-    
-  //http://127.0.0.1:9999/user/delete
+     
+    //http://127.0.0.1:9999/user/delete
     @DELETE
     @Path("/delete")
-    public String deleteUser(@QueryParam("userId") Long userId) {
-        userComponent.deleteUser(userId);
-        return "User deleted successfully";
+    public String deleteUser(@QueryParam("idNumber") Double idNumber) {
+        try {
+            userComponent.deleteUser(idNumber);
+            return "User with ID number " + idNumber + " deleted successfully.";
+        } catch (EntityNotFoundException e) {
+            return "Error: " + e.getMessage();
+        }
     }
 
 }

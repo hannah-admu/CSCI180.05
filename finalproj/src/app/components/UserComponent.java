@@ -18,16 +18,33 @@ public class UserComponent {
 	@Autowired
     private UserRepository userRepository;
     
-    //TO-DO
-    public void createUser(String username, Double phoneNumber, Double idNumber) {
+    //WORKS - makes a user with only username, phonenumber and idNumber. userId is auto incremented, admin is auto set to false, and 
+	//		- user will need to set the location notifs themselves
+    public void createUser(String username, String phoneNumber, Double idNumber) {
     
+        if (userRepository.findByIdNumber(idNumber) != null) {
+            throw new IllegalArgumentException("User with ID number " + idNumber + " already exists."); //because in ateneo, ID numbers are never repeated
+        }
+        User user = new User();
+        user.setUsername(username);
+        user.setPhoneNumber(phoneNumber);
+        user.setIdNumber(idNumber);
+        userRepository.save(user); 
+    	
     }
     
-    //TO-DO
+    //WORKS - updates a user's phone number based on their idNumber
     public void updatePhoneNumber(Double idNumber, String phoneNumber) {
-        
+        User user = userRepository.findByIdNumber(idNumber);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found with ID number: " + idNumber);
+        }
+        user.setPhoneNumber(phoneNumber);
+        userRepository.save(user);
     }
     
+    //WORKS - sets a user's notif preferences based on their idNumber. Eats a JSON that has a list of location Ids that the user wants to set
+    //		- then, this method turns that list into a string to store in the db, because I could NOT for the life of me figure out how to properly store lists in the db
     public void setNotificationPreferences(Double idNumber, List<Long> locationIds) {
         User user = userRepository.findByIdNumber(idNumber);
         if (user == null) {
@@ -42,6 +59,7 @@ public class UserComponent {
         userRepository.save(user);
     }
     
+    //WORKS - basically the reverse of setNotificationPreferences. returns a JSON with a List of locationIds that the user wants notifs to
     public List<Long> getNotificationPreferences(Double idNumber) {
         User user = userRepository.findByIdNumber(idNumber);
         if (user == null) {
@@ -59,12 +77,13 @@ public class UserComponent {
                      .toList();
     }
     
-    //deletes user 
-    public void deleteUser(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("User not found with ID: " + userId);
-        }
-        userRepository.deleteById(userId);
+    //WORKS - deletes a user based on their idNumber
+    public void deleteUser(Double idNumber) {
+    		User user = userRepository.findByIdNumber(idNumber);
+    	    if (user == null) {
+    	        throw new EntityNotFoundException("User not found with ID number: " + idNumber);
+    	    }
+    	    userRepository.delete(user);
     }
 
 }
