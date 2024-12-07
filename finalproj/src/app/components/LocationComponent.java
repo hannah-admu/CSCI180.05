@@ -172,16 +172,16 @@ public class LocationComponent {
     }
 
     // FOR CHECKING: Returns a map containing  key-value pairs where key is Location name and value is the Obstruction object.
-	public Map<String, Object> getObstructionsByLocation(String locationName) {
+	public List<Obstruction> getObstructionsByLocation(String locationName) {
 		List<Obstruction> obstructions = obstructionRepository.findByLocationNameContaining(locationName);
 		if (obstructions == null || obstructions.isEmpty()) {
 			throw new EntityNotFoundException("No obstructions found in " + locationName);
 		}
-        Map<String, Object> locationObstructions = new HashMap<>(); 
-		for (Obstruction obstruction : obstructions) {
-			locationObstructions.put(obstruction.getLocationName(), obstruction);
-		}
-		return locationObstructions;
+        //Map<String, Object> locationObstructions = new HashMap<>(); 
+		//for (Obstruction obstruction : obstructions) {
+		//	locationObstructions.put(obstruction.getLocationName(), obstruction);
+		//}
+		return obstructions;
 	}
 
 }
