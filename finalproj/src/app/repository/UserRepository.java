@@ -13,6 +13,7 @@ import app.entity.User;
 public interface UserRepository extends JpaRepository<User, Long>{
 	
 	//this isnt in our specs i just thought itd be useful to have 
+	User findByid(Long id);
     User findByIdNumber(Double idNumber);
     List<User> findByUsername(String username);
 

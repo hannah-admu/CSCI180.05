@@ -26,12 +26,12 @@ public class TwilioComponent {
 	private	byte[] encodedAuth= Base64.getEncoder().encode(creds.getBytes());
 	private final String authorization = "Basic " + new String(encodedAuth);
 	
-	public TwilioReplyDTO sendQuote(String cellNumber, String quoteMessage) throws IOException {
+	public TwilioReplyDTO sendMessage(String cellNumber, String message) throws IOException {
 		r = retrofit.create(TwilioRequests.class);
 		Call<TwilioReplyDTO> call = r.testSMS(
 				cellNumber,
 				msgsid,
-				quoteMessage,
+				message,
 				authorization,
 				url);
 		Response<TwilioReplyDTO> resp = call.execute();

@@ -1,5 +1,6 @@
 package app.components;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -31,7 +32,10 @@ public class ObstructionComponent {
     @Autowired
     private UserRepository userRepository;
     
-    public void reportObstruction(String locationName, String specificLocation, String description, Double idNumber, String reportType) {
+    @Autowired
+    private NotificationComponent notificationComponent;
+    
+    public void reportObstruction(String locationName, String specificLocation, String description, Double idNumber, String reportType) throws IOException {
         Long locationId = locationComponent.getLocationIdByName(locationName);
 
         Obstruction obstruction = new Obstruction();
@@ -47,7 +51,7 @@ public class ObstructionComponent {
     }
     
     // Method to make a report from the obstruction 
-    private void logReport(Double idNumber, Long obstructionId, String locationName, String specificLocation, String reportType, String description) {
+    private void logReport(Double idNumber, Long obstructionId, String locationName, String specificLocation, String reportType, String description) throws IOException {
         User user = userRepository.findByIdNumber(idNumber);
         Report report = new Report();
         report.setUserId(user.getId());
@@ -58,6 +62,8 @@ public class ObstructionComponent {
         report.setDescription(description);
         report.setReportType(reportType);
         reportRepository.save(report);
+        
+        notificationComponent.notifyByObstacleLocation(obstructionId);
     }
 
     
