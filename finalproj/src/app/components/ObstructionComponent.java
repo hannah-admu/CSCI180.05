@@ -1,6 +1,8 @@
 package app.components;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -40,15 +42,13 @@ public class ObstructionComponent {
         obstruction.setResolved(false);
         obstructionRepository.save(obstruction);
 
-        //log a report for the obstruction
+        // Log a report for the obstruction
         logReport(idNumber, obstruction.getId(), locationName, specificLocation, reportType, description);
     }
     
-    //method to make a report from the obstruction 
+    // Method to make a report from the obstruction 
     private void logReport(Double idNumber, Long obstructionId, String locationName, String specificLocation, String reportType, String description) {
         User user = userRepository.findByIdNumber(idNumber);
-
-
         Report report = new Report();
         report.setUserId(user.getId());
         report.setUsername(user.getUsername());
@@ -66,9 +66,20 @@ public class ObstructionComponent {
          return obstructionRepository.findByLocationId(locationId);
     }
     
-    //TO-DO
+    // FOR CHECKING: Marks an Obstruction as resolved; returns a String comment containing details about the resolution.
     public String resolveObstruction(Long obstructionId, String resolutionComment) {
-        return null;
+    	Optional<Obstruction> obstruction = obstructionRepository.findById(obstructionId);
+    	
+    	// Check if obstruction is null; if present, set its resolved status to true
+    	if (obstruction.isPresent()) {
+    		Obstruction obstructionToResolve = obstruction.get();
+    		obstructionToResolve.setResolved(true);
+    	} else {
+    		throw new NoSuchElementException();
+    	}
+    	
+    	// Return the resolutionComment as a string
+        return "Obstruction resolved with comment: " + resolutionComment;
     }
     
     public void deleteObstruction(Long obstructionId) {

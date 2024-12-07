@@ -1,5 +1,6 @@
 package app.components;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import app.entity.Location;
+import app.entity.Obstruction;
 import app.repository.LocationRepository;
 import app.repository.ObstructionRepository;
 
@@ -22,19 +24,19 @@ public class LocationComponent {
     @Autowired
     private ObstructionRepository obstructionRepository;
 	
-	///TO-DO: add more locations
+	// FOR CHECKING: 20 locations in total!
 	@PostConstruct
 	public void initializeLocations() {
 		
 		if(locationRepository.count() == 0) {
 			
 			Location faura = new Location();
-			faura.setName("Faura");
+			faura.setName("Faura Hall");
 			faura.setLatitude(14.639793431909977);
 	        faura.setLongitude(121.0768671219206);
 	        faura.setHasRamp(true);
 	        faura.setHasElevator(false);
-	        faura.setNotes("Smells like cat shit");
+	        faura.setNotes("Smells like cat shit!");
 	        locationRepository.save(faura);
 	        
 	        Location secA = new Location();
@@ -45,6 +47,78 @@ public class LocationComponent {
             secA.setHasElevator(true);
             secA.setNotes("math building");
             locationRepository.save(secA);
+            
+            Location secB = new Location();
+            secB.setName("SEC B");
+            secB.setLatitude(14.638097770140083);
+            secB.setLongitude(121.07720658444957);
+            secB.setHasRamp(true);
+            secB.setHasElevator(false);
+            secB.setNotes("Also known as the Science Education Complex B.");
+            locationRepository.save(secB);
+            
+            Location secC = new Location();
+            secC.setName("SEC C");
+            secC.setLatitude(14.639664314393684);
+            secC.setLongitude(121.0774208267799);
+            secC.setHasRamp(false);
+            secC.setHasElevator(true);
+            secC.setNotes("Also known as sexy.");
+            locationRepository.save(secC);
+            
+            Location newRizz = new Location();
+            newRizz.setName("New Rizal Library");
+            newRizz.setLatitude(14.640222798297907);
+            newRizz.setLongitude(121.076099909928);
+            newRizz.setHasRamp(false);
+            newRizz.setHasElevator(true);
+            newRizz.setNotes("Pepe Rizal's home.");
+            locationRepository.save(newRizz);
+            
+            Location faber = new Location();
+            faber.setName("Faber Hall");
+            faber.setLatitude(14.641118676667764);
+            faber.setLongitude(121.07785649728346);
+            faber.setHasRamp(false);
+            faber.setHasElevator(true);
+            faber.setNotes("Home to the Ateneo's #1 restrooms.");
+            locationRepository.save(faber);
+            
+            Location arete = new Location();
+            arete.setName("Arete");
+            arete.setLatitude(14.641118676667764);
+            arete.setLongitude(121.07785649728346);
+            arete.setHasRamp(true);
+            arete.setHasElevator(true);
+            arete.setNotes("Home to the Ateneo's #2 restrooms.");
+            locationRepository.save(arete);
+            
+            Location ctc = new Location();
+            ctc.setName("CTC");
+            ctc.setLatitude(14.6384473139613);
+            ctc.setLongitude(121.07659343506627);
+            ctc.setHasRamp(false);
+            ctc.setHasElevator(true);
+            ctc.setNotes("CTC has 5 floors?!");
+            locationRepository.save(ctc);
+            
+            Location jsec = new Location();
+            jsec.setName("John Gokongwei Student Enterprise Centers");
+            jsec.setLatitude(14.637810562716378);
+            jsec.setLongitude(121.0763171632968);
+            jsec.setHasRamp(false);
+            jsec.setHasElevator(false);
+            jsec.setNotes("Bring back JEFE!");
+            locationRepository.save(jsec);
+            
+            Location xavier = new Location();
+            xavier.setName("Xavier Hall");
+            xavier.setLatitude(14.637810562716378);
+            xavier.setLongitude(121.0763171632968);
+            xavier.setHasRamp(true);
+            xavier.setHasElevator(true);
+            xavier.setNotes("I love Xavier cat.");
+            locationRepository.save(xavier);
 		}
 		
 	}
@@ -69,14 +143,15 @@ public class LocationComponent {
         }
     }
 	
-	//TO-DO: need to return location features
-	public Location getLocationFeatures(String locationName) {
-		
+	// FOR CHECKING: Returns a String sentence stating a locatoin's available features
+	public String getLocationFeatures(String locationName) {
 		Location location = locationRepository.findByName(locationName);
 		if (location == null) {
             throw new EntityNotFoundException("Location not found: " + locationName);
-        }
-		return location;
+        }	
+		String elevatorPresence = ((location.getHasElevator() == true) ? "has an elevator" : "does not have an elevator");
+		String rampPresence = ((location.getHasRamp() == true) ? "has a ramp" : "does not have a ramp");		
+		return locationName + " " + elevatorPresence + " and " + rampPresence + ".";
 		
 	}
 	
@@ -96,9 +171,17 @@ public class LocationComponent {
         return locationRepository.findByHasElevator(true);
     }
 
-    //TO-DO
-	public Map<String, Object> getObstructionsByLocation(String locationName) {
-		return null;
+    // FOR CHECKING: Returns a map containing  key-value pairs where key is Location name and value is the Obstruction object.
+	public List<Obstruction> getObstructionsByLocation(String locationName) {
+		List<Obstruction> obstructions = obstructionRepository.findByLocationNameContaining(locationName);
+		if (obstructions == null || obstructions.isEmpty()) {
+			throw new EntityNotFoundException("No obstructions found in " + locationName);
+		}
+        //Map<String, Object> locationObstructions = new HashMap<>(); 
+		//for (Obstruction obstruction : obstructions) {
+		//	locationObstructions.put(obstruction.getLocationName(), obstruction);
+		//}
+		return obstructions;
 	}
 
 }

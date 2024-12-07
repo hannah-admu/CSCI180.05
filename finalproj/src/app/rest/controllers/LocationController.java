@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import app.components.LocationComponent;
 import app.entity.Location;
+import app.entity.Obstruction;
 
 @Component
 @Path("/location")
@@ -23,7 +24,7 @@ public class LocationController {
     @GET
     @Path("/features")
     @Produces(MediaType.APPLICATION_JSON)
-    public Location getAccessibilityFeatures(@QueryParam("locationName") String locationName) {
+    public String getAccessibilityFeatures(@QueryParam("locationName") String locationName) {
         return locationComponent.getLocationFeatures(locationName);
     }
 
@@ -47,7 +48,7 @@ public class LocationController {
     @GET
     @Path("/obstructions")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, Object> getObstructionsByLocation(@QueryParam("locationName") String locationName) {
+    public List<Obstruction> getObstructionsByLocation(@QueryParam("locationName") String locationName) {
         return locationComponent.getObstructionsByLocation(locationName);
     }
 
